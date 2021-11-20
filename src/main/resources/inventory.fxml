@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InventoryController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InventoryController">
    <children>
       <HBox layoutY="95.0" prefHeight="305.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="95.0">
          <children>
@@ -25,23 +25,23 @@
                         <Button fx:id="editButton" mnemonicParsing="false" onAction="#edit" prefHeight="25.0" prefWidth="80.0" text="Edit" />
                      </children>
                   </VBox>
-                  <TextField layoutX="19.0" layoutY="19.0" promptText="Search" />
+                  <TextField fx:id="searchBar" layoutX="19.0" layoutY="19.0" onAction="#searchInventory" promptText="Search" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="268.0" prefWidth="391.0">
                <children>
-                  <TableView layoutY="63.0" prefHeight="232.0" prefWidth="391.0">
+                  <TableView fx:id="tableView" layoutY="63.0" prefHeight="232.0" prefWidth="391.0">
                     <columns>
-                        <TableColumn prefWidth="134.0" text="Price" />
-                      <TableColumn prefWidth="123.0" text="Serial No." />
-                      <TableColumn prefWidth="132.0" text="Name" />
+                        <TableColumn fx:id="priceCol" prefWidth="134.0" text="Price" />
+                      <TableColumn fx:id="serialCol" prefWidth="123.0" text="Serial No." />
+                      <TableColumn fx:id="nameCol" prefWidth="132.0" text="Name" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER" prefHeight="63.0" prefWidth="391.0" spacing="10.0">
                      <children>
-                        <TextField promptText="Price" />
-                        <TextField promptText="Serial No." />
-                        <TextField promptText="Name" />
+                        <TextField fx:id="priceField" promptText="Price" />
+                        <TextField fx:id="serialField" promptText="Serial No." />
+                        <TextField fx:id="nameField" promptText="Name" />
                      </children>
                   </HBox>
                </children>
@@ -50,9 +50,9 @@
       </HBox>
       <MenuBar layoutX="-8.0" prefHeight="28.0" prefWidth="608.0">
         <menus>
-          <Menu fx:id="openButton" mnemonicParsing="false" onAction="#open" text="Open">
+          <Menu fx:id="openButton" mnemonicParsing="false" text="Open">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#open" text="Open Existing File" />
             </items>
           </Menu>
           <Menu fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Save">
@@ -62,9 +62,9 @@
           </Menu>
           <Menu fx:id="viewButton" mnemonicParsing="false" text="View">
             <items>
-              <MenuItem fx:id="sortValue" mnemonicParsing="false" text="Sort by Value" />
-                  <MenuItem fx:id="sortSerialNo" mnemonicParsing="false" text="Sort by Serial No." />
-                  <MenuItem fx:id="sortName" mnemonicParsing="false" text="Sort by Name" />
+              <MenuItem fx:id="sortValue" mnemonicParsing="false" onAction="#sortPrice" text="Sort by Value" />
+                  <MenuItem fx:id="sortSerialNo" mnemonicParsing="false" onAction="#sortSerial" text="Sort by Serial No." />
+                  <MenuItem fx:id="sortName" mnemonicParsing="false" onAction="#sortName" text="Sort by Name" />
             </items>
           </Menu>
         </menus>

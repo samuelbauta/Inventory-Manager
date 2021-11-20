@@ -1,8 +1,79 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 public class InventoryWrapper {
 
+        //create observable list
+        ObservableList<Item> data = FXCollections.observableArrayList();
+
+        //returns the observable list -COMPLETE
+        public ObservableList<Item> getData() {
+            return data;
+        }
+
+        //add item to the list -COMPLETE
+        public void addItem(Item newItem){
+            getData().addAll(newItem);
+        }
+
+        //removes the item from list -COMPLETE
+        public void removeItem(Item index){
+            getData().remove(index);
+        }
+
+        //clear the list -COMPLETE
+        public void clearList(){
+            getData().clear();
+        }
+
+        //TEST
+        public void saveList() {
+            //method saves list to local storage
+            //create new file chooser
+            FileChooser fileChooser = new FileChooser();
+            //create filter to only save text file
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(filter);
+            //open a new window that shows a save dialogue
+            File file = fileChooser.showSaveDialog(new Stage());
+            String status = null;
+
+            //write a text file with the values from the list
+            try {
+                BufferedWriter wr = new BufferedWriter(new FileWriter(file));
+                for (Item item : data) {
+                    wr.write(item.getPrice() + ", " + item.getSerial() + ", " + item.getName());
+                    wr.newLine();
+                }
+                wr.close();
+            }catch(Exception e) {
+                System.out.println("null");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 ObservableList inventory = FXCollections.observableArrayList();
 
 
@@ -11,19 +82,20 @@ public ObservableList<Item> inventoryContents()
     return inventory;
 }
 
-    public void add(){
-    Item item = new Item();
+    public void addItem(Item item){
     // add new item to the inventory
         //add price, name, serial no.
     }
 
-    public void remove(){
+    public void removeItem(Item index){
     // find index of the item you want to remove in the inventory
         //remove that item at that index
+        inventory.remove(index);
     }
 
     public void clear(){
     // clear the inventory of all items using clear method
+        inventory.removeAll();
     }
 
     public void open(){
@@ -43,4 +115,6 @@ public ObservableList<Item> inventoryContents()
 
     }
 
-}
+ */
+
+

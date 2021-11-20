@@ -1,15 +1,66 @@
+import javafx.scene.control.CheckBox;
+
 public class Item {
 
-    private double price;
+    //declaring variables of Item class
+    private String price;
+    private String serial;
+    private String name;
+
+    public Item(String price, String serial, String name) {
+        this.price = price;
+        this.serial = serial;
+        this.name = name;
+    }
+
+    //create setters and getters to be accessed elsewhere
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+
+
+
+
+
+
+/*ublic class Item {
+
+    public Item(String price, String serialNo, String name){
+
+    }
+
+    private String price;
     private String serialNo;
     private String name;
 
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -28,4 +79,6 @@ public class Item {
     public void setName(String name) {
         this.name = name;
     }
-}
+
+ */
+

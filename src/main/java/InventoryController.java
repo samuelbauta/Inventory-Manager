@@ -5,7 +5,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
@@ -18,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 public class InventoryController implements Initializable {
 
@@ -42,19 +42,29 @@ public class InventoryController implements Initializable {
         //creates text field inside each row when item is made to edit
         priceCol.setCellFactory(TextFieldTableCell.forTableColumn());
         serialCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        //sets table to sortable
+        tableView.getSortOrder().add(priceCol);
+        tableView.getSortOrder().add(nameCol);
+        tableView.getSortOrder().add(serialCol);
+
         nameCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Item, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Item, String> event) {
                 Item item = event.getRowValue();
                 item.setName(event.getNewValue());
+                item.setSerial(event.getNewValue());
+                item.setPrice(event.getNewValue());
             }
         });
 
     }
-
     //PARTIALLY COMPLETE
     @FXML
     void add(ActionEvent event) {
+
+        String error = "Error, Invalid Input!";
 
         //check is name is blank/empty & check if length is less than or equal to 256 characters
         if (!nameField.getText().equals("") && !nameField.getText().equals(" ")) {
@@ -62,9 +72,8 @@ public class InventoryController implements Initializable {
             if (nameField.getText().length() <= 256) {
 
                 //make string pattern & check if string matches the pattern
-                Pattern pattern = Pattern.compile("[a-zA-Z]{1}-[a-zA-Z0-9]{9}");
-                String[] splitSerial = serialField.getText().split("-");
-                if (Arrays.toString(splitSerial).matches(pattern.toString())) {
+               // Pattern pattern = Pattern.compile("[a-zA-Z]{1}-[a-zA-Z0-9]{9}");
+              //  if (serialField.getText().matches("[[[a-zA-Z]{1}]-[[a-zA-Z0-9]]{9}]")){
 
                     //ANOTHER IF STATEMENT GOES HERE
 
@@ -76,34 +85,37 @@ public class InventoryController implements Initializable {
                     double doublePrice = Double.parseDouble(priceField.getText());
                     if (doublePrice >= 0) {
 
-                        item = new Item(serialField.getText(), priceField.getText(), nameField.getText());
+                        item = new Item(priceField.getText()," ",nameField.getText());
                         inventory.addItem(item);
                         tableView.setItems(inventory.getData());
+                        priceField.clear();
+                        serialField.clear();
+                        nameField.clear();
 
                     } else {
                         //new window ENTER VALID PRICE
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Invalid Input");
+                        alert.setTitle(error);
                         alert.setHeaderText(null);
                         alert.setContentText("Input a valid price please!");
                         alert.showAndWait();
                         System.out.println("error 1");
                     }
 
-                } else {
+             /*   } else {
                     //new window ENTER VALID SERIAL NUMBER
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Invalid Input");
+                    alert.setTitle(error);
                     alert.setHeaderText(null);
                     alert.setContentText("Input a valid serial number please!");
                     alert.showAndWait();
                     System.out.println("error 2");
                 }
-
+*/
             } else {
                 //new window ENTER VALID NAME
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Input");
+                alert.setTitle(error);
                 alert.setHeaderText(null);
                 alert.setContentText("Input a valid name length please!");
                 alert.showAndWait();
@@ -113,7 +125,7 @@ public class InventoryController implements Initializable {
         } else {
             //new window ENTER VALID NAME
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid Input");
+            alert.setTitle(error);
             alert.setHeaderText(null);
             alert.setContentText("Input a valid name please!");
             alert.showAndWait();
@@ -138,6 +150,11 @@ public class InventoryController implements Initializable {
         inventory.clearList();
     }
 
+    //INCOMPLETE
+    @FXML
+    void edit(ActionEvent event) {
+
+    }
 
     //TEST
     @FXML
@@ -181,50 +198,12 @@ public class InventoryController implements Initializable {
         });
     }
 
-    //PARTIALLY COMPLETE
+    //TEST
     @FXML
-    void sortPrice(ActionEvent event) {
-
-        //how to sort lowest to highest?
-        FilteredList<Item> filterPrice = new FilteredList<>(inventory.data, b -> true);
-        filterPrice.setPredicate(item -> {
-
-            return Boolean.parseBoolean(item.getPrice());
-        });
-        SortedList<Item> sortedPrice = new SortedList<>(filterPrice);
-        sortedPrice.comparatorProperty().bind(tableView.comparatorProperty());
-        tableView.setItems(sortedPrice);
+    void save(ActionEvent event) {
+        inventory.saveList();
     }
 
-    //PARTIALLY COMPLETE
-    @FXML
-    void sortSerial(ActionEvent event) {
-
-        //how to sort alphabetical?
-        FilteredList<Item> filterSerial = new FilteredList<>(inventory.data, b -> true);
-        filterSerial.setPredicate(item -> {
-
-            return Boolean.parseBoolean(item.getSerial());
-        });
-        SortedList<Item> sortedSerial = new SortedList<>(filterSerial);
-        sortedSerial.comparatorProperty().bind(tableView.comparatorProperty());
-        tableView.setItems(sortedSerial);
-    }
-
-    //PARTIALLY COMPLETE
-    @FXML
-    void sortName(ActionEvent event) {
-
-        //how to sort alphabetical?
-        FilteredList<Item> filterName = new FilteredList<>(inventory.data, b -> true);
-        filterName.setPredicate(item -> {
-
-            return Boolean.parseBoolean(item.getName());
-        });
-        SortedList<Item> sortedName = new SortedList<>(filterName);
-        sortedName.comparatorProperty().bind(tableView.comparatorProperty());
-        tableView.setItems(sortedName);
-    }
 
     //TEST
     @FXML
@@ -256,33 +235,16 @@ public class InventoryController implements Initializable {
         }
     }
 
-
     //INCOMPLETE
     @FXML
     void OpenUserGuide(ActionEvent event) {
-    }
-
-    //TEST
-    @FXML
-    void SaveFile(ActionEvent event) {
-        inventory.saveList();
-    }
-
-    //INCOMPLETE
-    @FXML
-    void edit(ActionEvent event) {
-    }
-
-    //INCOMPLETE
-    @FXML
-    void save(ActionEvent event) {
     }
 
     @FXML
     private AnchorPane mainPane;
 
     @FXML
-    private TableView tableView;
+    private TableView<Item> tableView;
 
     @FXML
     private TableColumn<Item, String> priceCol;
@@ -312,9 +274,6 @@ public class InventoryController implements Initializable {
     private Button clearButton;
 
     @FXML
-    private Button editButton;
-
-    @FXML
     private Menu openButton;
 
     @FXML
@@ -324,31 +283,9 @@ public class InventoryController implements Initializable {
     private Menu saveButton;
 
     @FXML
-    private MenuItem sortName;
-
-    @FXML
-    private MenuItem sortSerialNo;
-
-    @FXML
-    private MenuItem sortValue;
-
-    @FXML
-    private Menu viewButton;
-
-    @FXML
     private MenuItem openFile;
 
-/*
-            //WHY IS THIS ALWAYS FALSE
+    @FXML
+    private MenuItem saveFile;
 
-                //Each inventory item shall have a name
-                //The name of an item shall be between 2 and 256 characters in length (inclusive)
-                if (!nameField.getText().equals("") && !nameField.getText().equals(" ")) {
-                    if (nameField.getText().length() >= 2 && nameField.getText().length() <= 256) {
-
-                        item = new Item(priceCol.getText(),serialCol.getText(),nameCol.getText());
-                        inventoryInstance.addItem(item);
-                        tableView.setItems(inventoryInstance.inventory);
-                    }
- */
 }

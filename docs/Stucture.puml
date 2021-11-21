@@ -1,0 +1,18 @@
+@startuml
+class InventoryController{
+}
+class InventoryManagementApplication{
+}
+class InventoryWrapper{
+}
+class Item{
+- String price
+- String serial
+- String name
+}
+
+Item *-- InventoryWrapper
+Item *-- InventoryController
+
+
+@enduml

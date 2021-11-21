@@ -22,7 +22,6 @@
                         <Button fx:id="addButton" mnemonicParsing="false" onAction="#add" prefHeight="25.0" prefWidth="80.0" text="Add" />
                         <Button fx:id="removeButton" mnemonicParsing="false" onAction="#remove" prefHeight="25.0" prefWidth="80.0" text="Remove" />
                         <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clear" prefHeight="25.0" prefWidth="80.0" text="Clear" />
-                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#edit" prefHeight="25.0" prefWidth="80.0" text="Edit" />
                      </children>
                   </VBox>
                   <TextField fx:id="searchBar" layoutX="19.0" layoutY="19.0" onAction="#searchInventory" promptText="Search" />
@@ -57,14 +56,7 @@
           </Menu>
           <Menu fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Save">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu fx:id="viewButton" mnemonicParsing="false" text="View">
-            <items>
-              <MenuItem fx:id="sortValue" mnemonicParsing="false" onAction="#sortPrice" text="Sort by Value" />
-                  <MenuItem fx:id="sortSerialNo" mnemonicParsing="false" onAction="#sortSerial" text="Sort by Serial No." />
-                  <MenuItem fx:id="sortName" mnemonicParsing="false" onAction="#sortName" text="Sort by Name" />
+              <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#save" text="Save FIle" />
             </items>
           </Menu>
         </menus>

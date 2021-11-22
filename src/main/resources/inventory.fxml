@@ -54,9 +54,11 @@
               <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#open" text="Open Existing File" />
             </items>
           </Menu>
-          <Menu fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Save">
+          <Menu fx:id="saveButton" mnemonicParsing="false" text="Save">
             <items>
-              <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#save" text="Save FIle" />
+              <MenuItem fx:id="htmlSave" mnemonicParsing="false" onAction="#saveHtml" text="Save as HTML" />
+                  <MenuItem fx:id="tsvSave" mnemonicParsing="false" onAction="#saveTsv" text="Save as TSV" />
+                  <MenuItem fx:id="jsonSave" mnemonicParsing="false" onAction="#saveJson" text="Save as JSON" />
             </items>
           </Menu>
         </menus>

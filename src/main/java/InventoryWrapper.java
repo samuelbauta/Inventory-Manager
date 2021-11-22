@@ -2,120 +2,152 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.Collections;
+
+import java.io.*;
+import java.util.Scanner;
+
 
 public class InventoryWrapper {
 
-        //create observable list
-        ObservableList<Item> data = FXCollections.observableArrayList();
+    //create observable list
+    ObservableList<Item> data = FXCollections.observableArrayList();
 
-        //returns the observable list -COMPLETE
-        public ObservableList<Item> getData() {
-            return data;
-        }
+    //returns the observable list -COMPLETE
+    public ObservableList<Item> getData() {
+        return data;
+    }
 
-        //add item to the list -COMPLETE
-        public void addItem(Item newItem){
-            getData().addAll(newItem);
-        }
+    //add item to the list -COMPLETE
+    public void addItem(Item newItem) {
+        getData().addAll(newItem);
+    }
 
-        //removes the item from list -COMPLETE
-        public void removeItem(Item index){
-            getData().remove(index);
-        }
+    //removes the item from list -COMPLETE
+    public void removeItem(Item index) {
+        getData().remove(index);
+    }
 
-        //clear the list -COMPLETE
-        public void clearList(){
-            getData().clear();
-        }
+    //clear the list -COMPLETE
+    public void clearList() {
+        getData().clear();
+    }
 
-        //TEST
-        public void saveList() {
-            //method saves list to local storage
-            //create new file chooser
+
+    //TEST
+    public void saveList() {
+        createHtml();
+    }
+
+    //creating html page and file
+    public void createHtml() {
+        //access data from inventory
+        this.getData();
+     try {
+            //creates filter, save dialogue window, and file
             FileChooser fileChooser = new FileChooser();
-            //create filter to only save text file
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(filter);
-            //open a new window that shows a save dialogue
+            FileChooser.ExtensionFilter htmlFilter = new FileChooser.ExtensionFilter("Html Files (*.html)", "*.html");
+            fileChooser.getExtensionFilters().add(htmlFilter);
             File file = fileChooser.showSaveDialog(new Stage());
-            String status = null;
+            //writer to write into file
+            BufferedWriter wr = new BufferedWriter(new FileWriter(file));
+            //writes the first tag of the html format into a string
+            wr.write("<table>\n");
+            //for every item in the list, write the data into a table row
+            for(Item item : getData()){
+                wr.write("<tr>\n" + "<th>" + item.getSerial() + "    " + item.getPrice() + "    " +  item.getName() + "</th>\n" + "</tr>");
+            }//finish the format with a table close
+            wr.write("\n</table");
 
-            //write a text file with the values from the list
-            try {
-                BufferedWriter wr = new BufferedWriter(new FileWriter(file));
-                for (Item item : data) {
-                    wr.write(item.getPrice() + ", " + item.getSerial() + ", " + item.getName());
-                    wr.newLine();
+            //close file
+         wr.close();
+        }catch (Exception e){
+
+        }
+    }
+
+    public void createJson(){
+
+    }
+
+    public void createTsv(){
+        //access data from inventory
+        this.getData();
+        try {
+            //creates filter, save dialogue window, and file
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter tsvFilter = new FileChooser.ExtensionFilter("TSV Files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(tsvFilter);
+            File file = fileChooser.showSaveDialog(new Stage());
+            //writer to write into file
+            PrintWriter wr = new PrintWriter(new FileWriter(file));
+            //writes header row into text file
+            wr.printf("Serial No.\tPrice\tName\t");
+            //for every item in the inventory, write to file, separate with tabs
+            for(Item item : getData()){
+                wr.printf("%n%1$13s\t%2$1s\t%3$2s\t",item.getSerial(),item.getPrice(),item.getName());
+            }
+            //close file
+            wr.close();
+        }catch (Exception e){
+
+        }
+    }
+
+    public void loadHtml(){
+
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter htmlFilter = new FileChooser.ExtensionFilter("Html Files (*.html)", "*.html");
+        fileChooser.getExtensionFilters().add(htmlFilter);
+
+        File file = fileChooser.showOpenDialog(null);
+
+        try{
+
+            Scanner reader = new Scanner(file);
+            while(reader.hasNextLine()){
+                String line[] = reader.nextLine().split("<table>");
+                
+            }
+
+        }catch(Exception e){
+
+        }
+
+    }
+
+    public void loadJson(){
+
+    }
+
+    public void loadTsv()throws IOException {
+
+        //   inventory.getData().clear();
+
+            //filter file type to text files only
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Htm files (*.txt)", "*.txt");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(filter);
+            //opens load catalogue
+            File file = fileChooser.showOpenDialog(null);
+
+            try{
+                //scan the file
+                Scanner reader = new Scanner(file);
+                while(reader.hasNextLine()){
+                    //read into string array
+                    String[] line = reader.nextLine().split(", ");
+                    String price = line[0];
+                    String serial = line[1];
+                    String name = line[2];
+
+         //           inventory.addItem(new Item(price,serial,name));
+         //           tableView.setItems(inventory.getData());
                 }
-                wr.close();
-            }catch(Exception e) {
+            }catch(Exception e){
                 System.out.println("null");
             }
-        }
+
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-ObservableList inventory = FXCollections.observableArrayList();
-
-
-public ObservableList<Item> inventoryContents()
-{
-    return inventory;
 }
-
-    public void addItem(Item item){
-    // add new item to the inventory
-        //add price, name, serial no.
-    }
-
-    public void removeItem(Item index){
-    // find index of the item you want to remove in the inventory
-        //remove that item at that index
-        inventory.remove(index);
-    }
-
-    public void clear(){
-    // clear the inventory of all items using clear method
-        inventory.removeAll();
-    }
-
-    public void open(){
-    // open method is used for testing purposes. This scans in a file and
-        // writes it into the inventory then checks to make sure that the
-        // contents of that file are correct
-        // this method also need to handle different types of files including json
-        // which im not sure how to do yet
-        //basically scan through each line in the file and add it to the inventory
-
-    }
-
-    public void save(){
-    // save method will scan content and add it into a file
-        // basically run through every item in the inventory and write it
-        // into a file
-
-    }
-
- */
-
 

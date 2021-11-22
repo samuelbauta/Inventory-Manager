@@ -1,9 +1,41 @@
 
-F
-java:S1481-"+Remove this unused "status" local variable.(‘ã¨İÿÿÿÿÿ
-S	java:S1068"9Replace this use of System.out or System.err by a logger.(Âû¯Ğüÿÿÿÿ
-V	java:S125N"<This block of commented-out lines of code should be removed.(ÿÏù«ıÿÿÿÿ
+—
+java:S1186D"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(øƒşÚ
+—
+java:S1186v"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(†™åï
+>	java:S108?")Either remove or fill this block of code.(”ı¾
+;
+java:S3457T"%String contains no format specifiers.(şÃ¸®
+>	java:S108[")Either remove or fill this block of code.(”ı¾
+N
+java:S1854l"8Remove this useless assignment to local variable "line".(ò¶’ú
+@
+java:S1197l"*Move the array designators [] to the type.(ò¶’ú
+?
+java:S1481l")Remove this unused "line" local variable.(ò¶’ú
+>	java:S108p")Either remove or fill this block of code.(”ı¾
+O
+java:S1854"8Remove this useless assignment to local variable "name".(£¿½ñ
+V
+java:S1854Œ":Remove this useless assignment to local variable "serial".(Öï¡úÿÿÿÿ
+P
+java:S1854‹"9Remove this useless assignment to local variable "price".(ŸÁø
+V	java:S125|"<This block of commented-out lines of code should be removed.(€Ö’öøÿÿÿÿ
+A
+java:S1481‹"*Remove this unused "price" local variable.(ŸÁø
+G
+java:S1481Œ"+Remove this unused "serial" local variable.(Öï¡úÿÿÿÿ
+@
+java:S1481")Remove this unused "name" local variable.(£¿½ñ
+W	java:S125"<This block of commented-out lines of code should be removed.(î‚¿¡ÿÿÿÿÿ
+T	java:S106“"9Replace this use of System.out or System.err by a logger.(Âû¯Ğüÿÿÿÿ
 0
 java:S1220""Move this file to a named package.
+a
+java:S2095‡"EUse try-with-resources or close this "Scanner" in a "finally" clause.(’³Ñşÿÿÿÿ
+d
+java:S2095R"IUse try-with-resources or close this "PrintWriter" in a "finally" clause.(Î¼Àöúÿÿÿÿ
 b
-java:S20951"LUse try-with-resources or close this "BufferedWriter" in a "finally" clause.(¯§É¸
+java:S20954"LUse try-with-resources or close this "BufferedWriter" in a "finally" clause.(¯§É¸
+`
+java:S2095j"EUse try-with-resources or close this "Scanner" in a "finally" clause.(’³Ñşÿÿÿÿ

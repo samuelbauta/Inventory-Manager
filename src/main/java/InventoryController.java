@@ -1,22 +1,18 @@
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ResourceBundle;
-import javafx.collections.transformation.FilteredList;
-import javafx.event.EventHandler;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
@@ -49,92 +45,230 @@ public class InventoryController implements Initializable {
         tableView.getSortOrder().add(nameCol);
         tableView.getSortOrder().add(serialCol);
 
+        //global string for error handling
+        String error = "error";
+
+        serialCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Item, String>>() {
+            //handles the serial edit
+              @Override
+              public void handle(TableColumn.CellEditEvent<Item, String> event) {
+                  Item item = event.getRowValue();
+                  boolean alreadyExists = false;
+                  //boolean for checking if item already exists
+                  if(event.getNewValue().length() == 13){
+                      //checks the length of the serial number
+                      if(event.getNewValue().matches("[a-zA-Z]-[\\w]{3}-[\\w]{3}-[\\w]{3}")){
+                          //checks format of string to see if it matches serial format: A-XXX-XXX-XXX
+                          for(Item thing : inventory.getData()){
+                              //for every item in the inventory see if it already exists
+                              if(thing.getSerial().contains(serialField.getText())){
+                                  alreadyExists = true;
+                              }else
+                                  alreadyExists = false;
+                          }if(!alreadyExists) {
+                              //if it doesn't already exist, add it to list
+                              item.setSerial(event.getNewValue());
+                          }else{
+                              //if it does, let the user know with an error window
+                              Alert alert = new Alert(Alert.AlertType.ERROR);
+                              alert.setTitle(error);
+                              alert.setHeaderText(null);
+                              alert.setContentText("This serial number already exist! Enter a new serial number!");
+                              alert.showAndWait();
+                              System.out.println("error init serial 1");
+                          }
+                      }else{
+                          //if user entered wrong format, let the user know with an error window
+                          Alert alert = new Alert(Alert.AlertType.ERROR);
+                          alert.setTitle(error);
+                          alert.setHeaderText(null);
+                          alert.setContentText("Serial number must be in the format: A-XXX-XXX-XXX\nA must be a letter and X may either be a letter or a digit!");
+                          alert.showAndWait();
+                          System.out.println("error init serial 2");
+                      }
+                  }else {
+                      //if user entered wrong format, let the user know with an error window
+                      Alert alert = new Alert(Alert.AlertType.ERROR);
+                      alert.setTitle(error);
+                      alert.setHeaderText(null);
+                      alert.setContentText("Serial number must be in the format: A-XXX-XXX-XXX!");
+                      alert.showAndWait();
+                      System.out.println("error init serial 3");
+                  }
+              }
+          });
+
+        priceCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Item, String>>() {
+            //handles the price edit
+             @Override
+             public void handle(TableColumn.CellEditEvent<Item, String> event) {
+                 Item item = event.getRowValue();
+                 //checks if price is a number
+                 if (event.getNewValue().matches("\\d*")) {
+                     //if it is a number, parse it from a string to a double
+                     double doublePrice = Double.parseDouble(event.getNewValue());
+                     //check if its non-negative
+                     if (doublePrice >= 0) {
+                         //if it is, add to inventory
+                         item.setPrice(event.getNewValue());
+                     } else {
+                         //if it isn't, let the user know
+                         Alert alert = new Alert(Alert.AlertType.ERROR);
+                         alert.setTitle(error);
+                         alert.setHeaderText(null);
+                         alert.setContentText("Price must be zero or greater!");
+                         alert.showAndWait();
+                         System.out.println("error init price 1");
+                     }
+                 } else {
+                     //if they entered non-numerical value, let the user know that, that's not allowed
+                     Alert alert = new Alert(Alert.AlertType.ERROR);
+                     alert.setTitle(error);
+                     alert.setHeaderText(null);
+                     alert.setContentText("Price must be entered as a numerical value!");
+                     alert.showAndWait();
+                     System.out.println("error init price 2");
+                 }
+             }
+            });
+
         nameCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Item, String>>() {
+            //handles name edit
             @Override
             public void handle(TableColumn.CellEditEvent<Item, String> event) {
                 Item item = event.getRowValue();
-                item.setName(event.getNewValue());
-                item.setSerial(event.getNewValue());
-                item.setPrice(event.getNewValue());
+
+                //checks that new value isn't blank and is between 2 and 256 characters
+                if (!event.getNewValue().equals("") && event.getNewValue().equals(" ")) {
+                    if (event.getNewValue().length() >= 2 && event.getNewValue().length() <= 256) {
+                        item.setName(event.getNewValue());
+                    } else {
+                        //if the value is not between 2 and 256, let the user know with an error window
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle(error);
+                        alert.setHeaderText(null);
+                        alert.setContentText("Name must be between 2 and 256 characters!");
+                        alert.showAndWait();
+                        System.out.println("error init name 1");
+                    }
+                } else {
+                    //let the user know item name cannot be left blank
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(error);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please enter a name for the item!");
+                    alert.showAndWait();
+                    System.out.println("error init name 2");
+                }
             }
         });
 
     }
-    //PARTIALLY COMPLETE
     @FXML
     void add(ActionEvent event) {
 
         String error = "Error, Invalid Input!";
+        boolean alreadyExists = false;
 
-        //check is name is blank/empty & check if length is less than or equal to 256 characters
+        //check is name is blank/empty
         if (!nameField.getText().equals("") && !nameField.getText().equals(" ")) {
             Item item;
-            if (nameField.getText().length() <= 256) {
+            //check if name is between 2 and 256 characters
+            if (nameField.getText().length() >= 2 && nameField.getText().length() <= 256) {
+                //check if serial is the proper length
+                if (serialField.getText().length() == 13) {
+                    //check if serial is the proper format
+                    if (serialField.getText().matches("[a-zA-Z]-[\\w]{3}-[\\w]{3}-[\\w]{3}")) {
+                        //check every item in the inventory and see if serial number already exists
+                        for(Item thing : inventory.getData()){
+                            if(thing.getSerial().contains(serialField.getText())){
+                                alreadyExists = true;
+                            }else
+                                alreadyExists = false;
+                        }if(!alreadyExists){
+                            //check if price is a numerical value
+                            if (priceField.getText().matches("\\d*")) {
+                                //change string to double & check for price value
+                                double doublePrice = Double.parseDouble(priceField.getText());
+                                if (doublePrice >= 0) {
+                                    //if all the conditions are met, add item to inventory
+                                    item = new Item(priceField.getText(), serialField.getText(), nameField.getText());
+                                    inventory.addItem(item);
+                                    tableView.setItems(inventory.getData());
+                                    priceField.clear();
+                                    serialField.clear();
+                                    nameField.clear();
+                                } else {
+                                    //let user know that price can not be negative number
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle(error);
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Price must be zero or greater!");
+                                    alert.showAndWait();
+                                    System.out.println("error 1");
+                                }
+                            } else {
+                                //let user know that the price must be numerical
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle(error);
+                                alert.setHeaderText(null);
+                                alert.setContentText("Price must be entered as a numerical value!");
+                                alert.showAndWait();
+                                System.out.println("error 2");
+                            }
 
-                //make string pattern & check if string matches the pattern
-               // Pattern pattern = Pattern.compile("[a-zA-Z]{1}-[a-zA-Z0-9]{9}");
-              //  if (serialField.getText().matches("[[[a-zA-Z]{1}]-[[a-zA-Z0-9]]{9}]")){
-
-                    //ANOTHER IF STATEMENT GOES HERE
-
-                        // IF ITEM DOESN'T ALREADY EXIST CONTINUE
-                    //ELSE DISPLAY ERROR WINDOW
-
-
-                    //change string to double & check for price value
-                    double doublePrice = Double.parseDouble(priceField.getText());
-                    if (doublePrice >= 0) {
-
-                        item = new Item(priceField.getText()," ",nameField.getText());
-                        inventory.addItem(item);
-                        tableView.setItems(inventory.getData());
-                        priceField.clear();
-                        serialField.clear();
-                        nameField.clear();
-
+                        } else {
+                            //let the user know that the serial number already exists
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle(error);
+                            alert.setHeaderText(null);
+                            alert.setContentText("This serial number already exist! Enter a new serial number!");
+                            alert.showAndWait();
+                            System.out.println("error 3");
+                        }
                     } else {
-                        //new window ENTER VALID PRICE
+                        //let user know that the serial is in incorrect format
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle(error);
                         alert.setHeaderText(null);
-                        alert.setContentText("Input a valid price please!");
+                        alert.setContentText("Serial number must be in the format: A-XXX-XXX-XXX\nA must be a letter and X may either be a letter or a digit!");
                         alert.showAndWait();
-                        System.out.println("error 1");
+                        System.out.println("error 4");
                     }
 
-             /*   } else {
-                    //new window ENTER VALID SERIAL NUMBER
+                } else {
+                    //let the user know that the serial is not proper length
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle(error);
                     alert.setHeaderText(null);
-                    alert.setContentText("Input a valid serial number please!");
+                    alert.setContentText("Serial number is not the proper length!\nSerial number must be in format: A-XXX-XXX-XXX");
                     alert.showAndWait();
-                    System.out.println("error 2");
+                    System.out.println("error 5");
                 }
-*/
+
+            }else {
+                //let the user know that the name must be between 2 and 256 characters
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(error);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Name must be between 2 and 256 characters!");
+                    alert.showAndWait();
+                    System.out.println("error 6");
+                }
+
             } else {
-                //new window ENTER VALID NAME
+                //let user know the name cannot be left blank
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(error);
                 alert.setHeaderText(null);
-                alert.setContentText("Input a valid name length please!");
+                alert.setContentText("Please enter a name for the item!");
                 alert.showAndWait();
-                System.out.println("error 3");
+                System.out.println("error 7");
             }
-
-        } else {
-            //new window ENTER VALID NAME
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(error);
-            alert.setHeaderText(null);
-            alert.setContentText("Input a valid name please!");
-            alert.showAndWait();
-            System.out.println("error 4");
         }
-    }
 
-    //CHECK
     @FXML
+    //removes single item from list
     void remove(ActionEvent event) {
 
         //creates object and set it to value of the selected item
@@ -144,33 +278,26 @@ public class InventoryController implements Initializable {
         inventory.removeItem((Item) item);
     }
 
-    //CHECK
     @FXML
+    //clear all items from list
     void clear(ActionEvent event) {
         inventory.clearList();
     }
 
-    //INCOMPLETE
     @FXML
-    void edit(ActionEvent event) {
-
-    }
-
-    //TEST
-    @FXML
+    //search through the entire inventory
     void searchInventory(ActionEvent event) {
 
         //create filtered list
         FilteredList<Item> searchFilter = new FilteredList<>(inventory.getData(), e -> true);
         searchBar.setOnKeyReleased(e -> {
+            //whatever key is pressed, search for the corresponding item with that value
             searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
                 searchFilter.setPredicate((Predicate<? super Item>) item -> {
-
-                    //search bar is empty
+                    //if search bar is empty
                     if (newValue == null || newValue.isEmpty()) {
                         return true;
                     }
-
                     //search bar - searching for price
                     String lowerCaseFilter = newValue.toLowerCase();
                     if (item.getPrice().contains(newValue)) {
@@ -191,6 +318,7 @@ public class InventoryController implements Initializable {
                 });
             });
 
+            //sorted list so the search bar can pull sorted data
             SortedList<Item> sortedData = new SortedList<>(searchFilter);
             sortedData.comparatorProperty().bind(tableView.comparatorProperty());
             tableView.setItems(sortedData);
@@ -198,17 +326,31 @@ public class InventoryController implements Initializable {
         });
     }
 
-    //TEST
     @FXML
-    void save(ActionEvent event) {
-        inventory.saveList();
+    void saveHtml(ActionEvent event) {
+        //calls html method in wrapper class
+        inventory.createHtml();
+    }
+
+    @FXML
+    void saveTsv(ActionEvent event) {
+        //calls tsv method in wrapper class
+        inventory.createTsv();
+    }
+
+    @FXML
+    void saveJson(ActionEvent event) {
+        //calls json method in wrapper class
+        inventory.createJson();
     }
 
 
-    //TEST
+
+    //open an existing list from file
     @FXML
-        //open already existing list and load it into list app
     void open(ActionEvent event) throws IOException {
+
+        inventory.getData().clear();
 
         //filter file type to text files only
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
@@ -286,6 +428,12 @@ public class InventoryController implements Initializable {
     private MenuItem openFile;
 
     @FXML
-    private MenuItem saveFile;
+    private MenuItem htmlSave;
+
+    @FXML
+    private MenuItem tsvSave;
+
+    @FXML
+    private MenuItem jsonSave;
 
 }

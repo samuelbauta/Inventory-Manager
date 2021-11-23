@@ -1,3 +1,7 @@
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Samuel Bauta
+ */
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -329,19 +333,19 @@ public class InventoryController implements Initializable {
     @FXML
     void saveHtml(ActionEvent event) {
         //calls html method in wrapper class
-        inventory.createHtml();
+        inventory.saveHtml();
     }
 
     @FXML
     void saveTsv(ActionEvent event) {
         //calls tsv method in wrapper class
-        inventory.createTsv();
+        inventory.saveTsv();
     }
 
     @FXML
-    void saveJson(ActionEvent event) {
+    void saveJson(ActionEvent event) throws IOException {
         //calls json method in wrapper class
-        inventory.createJson();
+        inventory.saveJson();
     }
 
 
@@ -375,6 +379,24 @@ public class InventoryController implements Initializable {
         }catch(Exception e){
             System.out.println("null");
         }
+
+
+    }
+
+    @FXML
+    void openHtml(ActionEvent event) throws IOException {
+        inventory.loadHtml();
+        tableView.setItems(inventory.getData());
+    }
+    @FXML
+    void openTsv(ActionEvent event) throws IOException {
+        inventory.loadTsv();
+        tableView.setItems(inventory.getData());
+    }
+    @FXML
+    void openJson(ActionEvent event) {
+        inventory.loadJson();
+        tableView.setItems(inventory.getData());
     }
 
     //INCOMPLETE
@@ -435,5 +457,15 @@ public class InventoryController implements Initializable {
 
     @FXML
     private MenuItem jsonSave;
+
+    @FXML
+    private MenuItem htmlOpen;
+
+    @FXML
+    private MenuItem tsvOpen;
+
+    @FXML
+    private MenuItem jsonOpen;
+
 
 }

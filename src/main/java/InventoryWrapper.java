@@ -1,47 +1,54 @@
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Samuel Bauta
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import java.io.File;
+import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import java.io.*;
+import java.util.Iterator;
 import java.util.Scanner;
-
 
 public class InventoryWrapper {
 
-    //create observable list
     ObservableList<Item> data = FXCollections.observableArrayList();
 
-    //returns the observable list -COMPLETE
+    //create observable list aka inventory
     public ObservableList<Item> getData() {
         return data;
     }
 
-    //add item to the list -COMPLETE
+    //add item to the inventory
     public void addItem(Item newItem) {
         getData().addAll(newItem);
     }
 
-    //removes the item from list -COMPLETE
+    //removes item at given index from inventory
     public void removeItem(Item index) {
         getData().remove(index);
     }
 
-    //clear the list -COMPLETE
+    //clears the inventory
     public void clearList() {
         getData().clear();
     }
 
-
-    //TEST
-    public void saveList() {
-        createHtml();
-    }
-
-    //creating html page and file
-    public void createHtml() {
+    //creates html page and file
+    public void saveHtml() {
         //access data from inventory
         this.getData();
+        String tdOpen = "<\ttd>";
+        String tdClose = "</td\n>";
      try {
             //creates filter, save dialogue window, and file
             FileChooser fileChooser = new FileChooser();
@@ -50,33 +57,73 @@ public class InventoryWrapper {
             File file = fileChooser.showSaveDialog(new Stage());
             //writer to write into file
             BufferedWriter wr = new BufferedWriter(new FileWriter(file));
-            //writes the first tag of the html format into a string
-            wr.write("<table>\n");
             //for every item in the list, write the data into a table row
+             wr.write("<table>\n<tr>\n<th>Serial Number\t\tValue\t\tName\t\t</th>\n</tr>\n");
+
             for(Item item : getData()){
-                wr.write("<tr>\n" + "<th>" + item.getSerial() + "    " + item.getPrice() + "    " +  item.getName() + "</th>\n" + "</tr>");
+                wr.write("<tr>");
+                wr.write(tdOpen + item.getSerial() + tdClose);
+                wr.write(tdOpen + item.getPrice() + tdClose);
+                wr.write(tdOpen + item.getName() + tdClose);
+                wr.write("\t</tr>");
             }//finish the format with a table close
+
             wr.write("\n</table");
 
             //close file
          wr.close();
         }catch (Exception e){
-
+         e.printStackTrace();
         }
     }
 
-    public void createJson(){
+    //creates json file
+    public void saveJson() throws IOException {
+        this.getData();
+        //displays the save window
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter jsonFilter = new FileChooser.ExtensionFilter("Json Files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(jsonFilter);
+        File file = fileChooser.showSaveDialog(new Stage());
+        //writer to write into file
+        BufferedWriter wr = new BufferedWriter(new FileWriter(file));
+        //object to store data in json format
+        JSONObject object = new JSONObject();
+        //looping and adding each item attribute to the array, so we can store in a json object
+        JSONArray array = new JSONArray();
 
+        try{
+            //loops through every item in the inventory
+            for(Item item : getData()){
+                //temp object will store each attribute
+                JSONObject temp = new JSONObject();
+                //putting all the attributes in temp item
+                temp.put("Serial No",item.getSerial());
+                temp.put("Price",item.getPrice());
+                temp.put("Name",item.getName());
+
+
+                array.add(temp);
+            }
+            object.put("inventory", array);
+            wr.write(object.toJSONString());
+            wr.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public void createTsv(){
+    //creates tsv file
+    public void saveTsv(){
         //access data from inventory
         this.getData();
         try {
-            //creates filter, save dialogue window, and file
+            //filters to only text files
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter tsvFilter = new FileChooser.ExtensionFilter("TSV Files (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(tsvFilter);
+            //open load window
             File file = fileChooser.showSaveDialog(new Stage());
             //writer to write into file
             PrintWriter wr = new PrintWriter(new FileWriter(file));
@@ -89,65 +136,106 @@ public class InventoryWrapper {
             //close file
             wr.close();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
 
-    public void loadHtml(){
-
+    //loads html file into inventory
+    public void loadHtml() throws IOException {
+        //filter file type to html files only
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter htmlFilter = new FileChooser.ExtensionFilter("Html Files (*.html)", "*.html");
         fileChooser.getExtensionFilters().add(htmlFilter);
+        //open load catalogue
+        File html = fileChooser.showOpenDialog(null);
+        Document doc;
+        //use jsoup parser to parse the html file
+        try {
+            doc = Jsoup.parse(html, "UTF-8");
+            Element table = doc.selectFirst("table");
+            //mark every row
+            Iterator<Element> row = table.select("tr").iterator();
+            row.next();
+            //skip header row since its just "serial, price, name" and move onto actual items for the inventory
+            while (row.hasNext()) {
+                //loop through every row and find the "td" -table data
+                Iterator<Element> i = row.next().select("td").iterator();
+                //select that td and get the data from every td in the corresponding row
+                String serial = i.next().text();
+                String name = i.next().text();
+                String price = i.next().text();
+                //set item = to these strings
+                Item item = new Item(price, serial, name);
+                //add item to inventory
+                data.add(item);
+            }
+        } catch (Exception e) {
+            //prints rip if error occurs because that's how I felt 998/999 times that I implemented this wrong and method fail :'(
+            System.out.println("rip");
+            e.printStackTrace();
+        }
+    }
 
+    //loads json file into inventory
+    public void loadJson(){
+        this.getData();
+        //filter to only json files
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Json files (*.json)", "*.json");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(filter);
+        //opens load catalogue
         File file = fileChooser.showOpenDialog(null);
-
+        //parser to parse the json data
+        JSONParser parser = new JSONParser();
         try{
-
-            Scanner reader = new Scanner(file);
-            while(reader.hasNextLine()){
-                String line[] = reader.nextLine().split("<table>");
-                
+            //parse the json data
+            Object pObject = parser.parse(new FileReader(file));
+            //store that data into a json object by casting obj to be JSON
+            JSONObject jObject = (JSONObject) pObject;
+            //store that object data into a json array
+            JSONArray jArray = (JSONArray) jObject.get("inventory");
+            //loop through every item object in the array
+            for(Object items : jArray){
+                //case items to be json
+                JSONObject itemObject = (JSONObject) items;
+                //assign string values to their corresponding json data
+                String serial = (String) itemObject.get("Serial No");
+                String price = (String) itemObject.get("Price");
+                String name = (String) itemObject.get("Name");
+                //create new item with string data
+                Item item = new Item(price, serial, name);
+                //add item to the inventory
+                data.add(item);
             }
 
         }catch(Exception e){
-
+            e.printStackTrace();
         }
-
     }
 
-    public void loadJson(){
-
-    }
-
+    //loads tsv file into inventory
     public void loadTsv()throws IOException {
 
-        //   inventory.getData().clear();
-
             //filter file type to text files only
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Htm files (*.txt)", "*.txt");
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Tsv files (*.txt)", "*.txt");
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(filter);
             //opens load catalogue
             File file = fileChooser.showOpenDialog(null);
-
             try{
                 //scan the file
                 Scanner reader = new Scanner(file);
                 while(reader.hasNextLine()){
                     //read into string array
-                    String[] line = reader.nextLine().split(", ");
+                    String[] line = reader.nextLine().split("\t");
                     String price = line[0];
                     String serial = line[1];
                     String name = line[2];
-
-         //           inventory.addItem(new Item(price,serial,name));
-         //           tableView.setItems(inventory.getData());
+                    Item item;
+                    data.add(new Item(serial,price,name));
                 }
             }catch(Exception e){
-                System.out.println("null");
+                e.printStackTrace();
             }
-
     }
-
 }
-

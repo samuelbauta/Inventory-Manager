@@ -1,11 +1,57 @@
 @startuml
 class InventoryController{
++initialize()
++handle()
+
+-mainPane
+-tableview
+-priceCol
+-serialCol
+-nameCol
+-priceField
+-serialField
+-nameField
+-searchBar
+-addButton
+-clearButton
+-openButton
+-removeButton
+-saveButton
+-openFile
+-htmlSave
+-tsvSave
+-jsonSave
+-htmlOpen
+-tsvOpen
+-jsonOpen
 }
 class InventoryManagementApplication{
++start()
++main()
 }
 class InventoryWrapper{
++getData()
++addItem()
++removeItem()
++clearList()
++saveHtml()
++saveJson()
++saveTsv()
++loadHtml()
++loadJson()
++loadTsv()
+
+
 }
 class Item{
+
++item()
++getPrice()
++setPrice()
++getSerial()
++setSerial()
++getName()
++setName()
 - String price
 - String serial
 - String name

@@ -1,5 +1,7 @@
-import javafx.scene.control.CheckBox;
-
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Samuel Bauta
+ */
 public class Item {
 
     //declaring variables of Item class

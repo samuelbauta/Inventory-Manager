@@ -59,6 +59,7 @@ class Item{
 
 Item *-- InventoryWrapper
 Item *-- InventoryController
+InventoryWrapper o-- InventoryController
 
 
 @enduml

@@ -67,9 +67,7 @@ public class InventoryWrapper {
                 wr.write(tdOpen + item.getName() + tdClose);
                 wr.write("\t</tr>");
             }//finish the format with a table close
-
             wr.write("\n</table");
-
             //close file
          wr.close();
         }catch (Exception e){
@@ -203,9 +201,15 @@ public class InventoryWrapper {
                 String price = (String) itemObject.get("Price");
                 String name = (String) itemObject.get("Name");
                 //create new item with string data
-                Item item = new Item(price, serial, name);
-                //add item to the inventory
-                data.add(item);
+                if(!serial.matches("Serial No")){
+                    if(!price.matches("Price")){
+                        if(!name.matches("Name")){
+                            Item item = new Item(price, serial, name);
+                            //add item to the inventory
+                            data.add(item);
+                        }
+                    }
+                }
             }
 
         }catch(Exception e){

@@ -143,7 +143,7 @@ public class InventoryController implements Initializable {
                 Item item = event.getRowValue();
 
                 //checks that new value isn't blank and is between 2 and 256 characters
-                if (!event.getNewValue().equals("") && event.getNewValue().equals(" ")) {
+                if (!event.getNewValue().equals("") && !event.getNewValue().equals(" ")) {
                     if (event.getNewValue().length() >= 2 && event.getNewValue().length() <= 256) {
                         item.setName(event.getNewValue());
                     } else {
@@ -185,13 +185,10 @@ public class InventoryController implements Initializable {
                     if (serialField.getText().matches("[a-zA-Z]-[\\w]{3}-[\\w]{3}-[\\w]{3}")) {
                         //check every item in the inventory and see if serial number already exists
                         for(Item thing : inventory.getData()){
-                            if(thing.getSerial().contains(serialField.getText())){
-                                alreadyExists = true;
-                            }else
-                                alreadyExists = false;
+                            alreadyExists = thing.getSerial().contains(serialField.getText());
                         }if(!alreadyExists){
                             //check if price is a numerical value
-                            if (priceField.getText().matches("\\d*")) {
+                            if (priceField.getText().matches("\\d*.\\d*")) {
                                 //change string to double & check for price value
                                 double doublePrice = Double.parseDouble(priceField.getText());
                                 if (doublePrice >= 0) {
@@ -329,27 +326,21 @@ public class InventoryController implements Initializable {
 
         });
     }
-
     @FXML
     void saveHtml(ActionEvent event) {
         //calls html method in wrapper class
         inventory.saveHtml();
     }
-
     @FXML
     void saveTsv(ActionEvent event) {
         //calls tsv method in wrapper class
         inventory.saveTsv();
     }
-
     @FXML
     void saveJson(ActionEvent event) throws IOException {
         //calls json method in wrapper class
         inventory.saveJson();
     }
-
-
-
     //open an existing list from file
     @FXML
     void open(ActionEvent event) throws IOException {
@@ -379,8 +370,6 @@ public class InventoryController implements Initializable {
         }catch(Exception e){
             System.out.println("null");
         }
-
-
     }
 
     @FXML
@@ -397,11 +386,6 @@ public class InventoryController implements Initializable {
     void openJson(ActionEvent event) {
         inventory.loadJson();
         tableView.setItems(inventory.getData());
-    }
-
-    //INCOMPLETE
-    @FXML
-    void OpenUserGuide(ActionEvent event) {
     }
 
     @FXML

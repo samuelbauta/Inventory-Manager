@@ -65,10 +65,15 @@ public class InventoryController implements Initializable {
                           //checks format of string to see if it matches serial format: A-XXX-XXX-XXX
                           for(Item thing : inventory.getData()){
                               //for every item in the inventory see if it already exists
-                              if(thing.getSerial().contains(serialField.getText())){
+                              if(thing.getSerial().contains(event.getNewValue())){
                                   alreadyExists = true;
                               }else
                                   alreadyExists = false;
+                              if(thing.getSerial().contains(event.getOldValue())){
+                                  alreadyExists = true;
+                              }else{
+                                  alreadyExists = false;
+                              }
                           }if(!alreadyExists) {
                               //if it doesn't already exist, add it to list
                               item.setSerial(event.getNewValue());
@@ -108,7 +113,7 @@ public class InventoryController implements Initializable {
              public void handle(TableColumn.CellEditEvent<Item, String> event) {
                  Item item = event.getRowValue();
                  //checks if price is a number
-                 if (event.getNewValue().matches("\\d*")) {
+                 if (event.getNewValue().matches("\\d*.\\d*")||event.getNewValue().matches("\\d*")) {
                      //if it is a number, parse it from a string to a double
                      double doublePrice = Double.parseDouble(event.getNewValue());
                      //check if its non-negative
@@ -188,7 +193,7 @@ public class InventoryController implements Initializable {
                             alreadyExists = thing.getSerial().contains(serialField.getText());
                         }if(!alreadyExists){
                             //check if price is a numerical value
-                            if (priceField.getText().matches("\\d*.\\d*")) {
+                            if (priceField.getText().matches("\\d*.\\d*")||priceField.getText().matches("\\d*")) {
                                 //change string to double & check for price value
                                 double doublePrice = Double.parseDouble(priceField.getText());
                                 if (doublePrice >= 0) {

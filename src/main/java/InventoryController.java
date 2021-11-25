@@ -65,14 +65,12 @@ public class InventoryController implements Initializable {
                           //checks format of string to see if it matches serial format: A-XXX-XXX-XXX
                           for(Item thing : inventory.getData()){
                               //for every item in the inventory see if it already exists
-                              if(thing.getSerial().contains(event.getNewValue())){
+                              if(thing.getSerial().contains(event.getNewValue())) {
                                   alreadyExists = true;
-                              }else
-                                  alreadyExists = false;
-                              if(thing.getSerial().contains(event.getOldValue())){
-                                  alreadyExists = true;
-                              }else{
-                                  alreadyExists = false;
+
+                                  if (event.getOldValue().contains(event.getNewValue())) {
+                                      alreadyExists = true;
+                                  }
                               }
                           }if(!alreadyExists) {
                               //if it doesn't already exist, add it to list

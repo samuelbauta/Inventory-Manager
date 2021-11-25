@@ -1,0 +1,48 @@
+
+m
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 44 to the 15 allowed.(ÛŒ¦…ıÿÿÿÿ
+S	java:S106U"9Replace this use of System.out or System.err by a logger.(¨Ú¿‡şÿÿÿÿ
+S	java:S106^"9Replace this use of System.out or System.err by a logger.(ÅÂÚ™ûÿÿÿÿ
+N	java:S106g"9Replace this use of System.out or System.err by a logger.(ÿäŸİ
+T	java:S106€"9Replace this use of System.out or System.err by a logger.(ºİ ¥üÿÿÿÿ
+O	java:S106‰"9Replace this use of System.out or System.err by a logger.(úğ­
+T	java:S106Ÿ"9Replace this use of System.out or System.err by a logger.(µ¤¹Áıÿÿÿÿ
+T	java:S106¨"9Replace this use of System.out or System.err by a logger.(œË˜†ûÿÿÿÿ
+i
+java:S3776¯"RRefactor this method to reduce its Cognitive Complexity from 43 to the 15 allowed.(ÎñÇà
+O	java:S106Ô"9Replace this use of System.out or System.err by a logger.(ı­êä
+O	java:S106İ"9Replace this use of System.out or System.err by a logger.(ïªœô
+T	java:S106ç"9Replace this use of System.out or System.err by a logger.(ñŞ€úÿÿÿÿ
+T	java:S106ğ"9Replace this use of System.out or System.err by a logger.(ğï‘êşÿÿÿÿ
+O	java:S106ú"9Replace this use of System.out or System.err by a logger.(Ã¦
+O	java:S106„"9Replace this use of System.out or System.err by a logger.(Ñ–¥×
+O	java:S106"9Replace this use of System.out or System.err by a logger.(´Îêë
+n
+java:S3776¥"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(áûå¬ıÿÿÿÿ
+B
+java:S1602«",Remove useless curly braces around statement(Ğ²ÕJ
+Q	java:S125´"<This block of commented-out lines of code should be removed.(Îå[
+q
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(–¹ë8¦ÏûªÕ/
+q
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(†Ğ¥Å8¦ÏûªÕ/
+v
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(ÒÜÅ¸úÿÿÿÿ8§ÏûªÕ/
+o
+java:S2293!"YReplace the type specification in this constructor call with the diamond operator ("<>").(ÔÀÎë
+o
+java:S2293""YReplace the type specification in this constructor call with the diamond operator ("<>").(ü‹®É
+n
+java:S2293#"YReplace the type specification in this constructor call with the diamond operator ("<>").(ººİ
+K
+java:S1066½"/Merge this if statement with the enclosing one.(€Èıÿÿÿÿ
+=
+java:S16047"(Make this anonymous inner class a lambda(òƒo
+>
+java:S1604l"(Make this anonymous inner class a lambda(¦ş“•
+?
+java:S1604"(Make this anonymous inner class a lambda(–àåÃ
+0
+java:S1220""Move this file to a named package.
+†
+java:S4165H"kRemove this useless assignment; "alreadyExists" already holds the assigned value along all execution paths.(‹æöÜÿÿÿÿÿ

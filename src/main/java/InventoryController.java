@@ -341,49 +341,22 @@ public class InventoryController implements Initializable {
         //calls json method in wrapper class
         inventory.saveJson();
     }
-    //open an existing list from file
-    @FXML
-    void open(ActionEvent event) throws IOException {
-
-        inventory.getData().clear();
-
-        //filter file type to text files only
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(filter);
-        //opens load catalogue
-        File file = fileChooser.showOpenDialog(null);
-
-        try{
-            //scan the file
-            Scanner reader = new Scanner(file);
-            while(reader.hasNextLine()){
-                //read into string array
-                String[] line = reader.nextLine().split(", ");
-                String price = line[0];
-                String serial = line[1];
-                String name = line[2];
-
-                inventory.addItem(new Item(price,serial,name));
-                tableView.setItems(inventory.getData());
-            }
-        }catch(Exception e){
-            System.out.println("null");
-        }
-    }
 
     @FXML
     void openHtml(ActionEvent event) throws IOException {
+        inventory.clearList();
         inventory.loadHtml();
         tableView.setItems(inventory.getData());
     }
     @FXML
     void openTsv(ActionEvent event) throws IOException {
+        inventory.clearList();
         inventory.loadTsv();
         tableView.setItems(inventory.getData());
     }
     @FXML
     void openJson(ActionEvent event) {
+        inventory.clearList();
         inventory.loadJson();
         tableView.setItems(inventory.getData());
     }
@@ -453,3 +426,36 @@ public class InventoryController implements Initializable {
 
 
 }
+
+/*
+ //open an existing list from file
+    @FXML
+    void open(ActionEvent event) throws IOException {
+
+        inventory.getData().clear();
+
+        //filter file type to text files only
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(filter);
+        //opens load catalogue
+        File file = fileChooser.showOpenDialog(null);
+
+        try{
+            //scan the file
+            Scanner reader = new Scanner(file);
+            while(reader.hasNextLine()){
+                //read into string array
+                String[] line = reader.nextLine().split(", ");
+                String price = line[0];
+                String serial = line[1];
+                String name = line[2];
+
+                inventory.addItem(new Item(price,serial,name));
+                tableView.setItems(inventory.getData());
+            }
+        }catch(Exception e){
+            System.out.println("null");
+        }
+    }
+ */

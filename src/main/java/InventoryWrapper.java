@@ -149,19 +149,22 @@ public class InventoryWrapper {
         Document doc;
         //use jsoup parser to parse the html file
         try {
+            //parse data
             doc = Jsoup.parse(html, "UTF-8");
-            ArrayList<String> htmlItems = new ArrayList<>();
-            Element table = doc.select("table").get(0); //select the first table.
+            //select the table
+            Element table = doc.select("table").get(0);
+            //select the row
             Elements rows = table.select("tr");
 
-            for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
+            for (int i = 1; i < rows.size(); i++) {
+                //get columns
                 Element row = rows.get(i);
                 Elements cols = row.select("td");
-
+                //get data and assign to strings
                 String serial = cols.get(0).text();
                 String price = cols.get(1).text();
                 String name = cols.get(2).text();
-
+                //add items into list using string data
                 data.add(new Item(price, serial, name));
             }
 
@@ -199,16 +202,12 @@ public class InventoryWrapper {
                 String price = (String) itemObject.get("Price");
                 String name = (String) itemObject.get("Name");
                 //create new item with string data
-                if(!serial.matches("Serial No")){
-                    if(!price.matches("Price")){
-                        if(!name.matches("Name")){
-                            Item item = new Item(price, serial, name);
-                            //add item to the inventory
-                            data.add(item);
-                        }
-                    }
-                }
+
+                Item item = new Item(price, serial, name);
+                //add item to the inventory
+                data.add(item);
             }
+            data.remove(-1);
 
         }catch(Exception e){
             e.printStackTrace();
@@ -227,6 +226,7 @@ public class InventoryWrapper {
             try{
                 //scan the file
                 Scanner reader = new Scanner(file);
+                reader.nextLine();
                 while(reader.hasNextLine()){
                     //read into string array
                     String[] line = reader.nextLine().split("\t");

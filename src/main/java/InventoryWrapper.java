@@ -15,7 +15,10 @@ import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -47,8 +50,6 @@ public class InventoryWrapper {
     public void saveHtml() {
         //access data from inventory
         this.getData();
-        String tdOpen = "<\ttd>";
-        String tdClose = "</td\n>";
      try {
             //creates filter, save dialogue window, and file
             FileChooser fileChooser = new FileChooser();
@@ -58,16 +59,15 @@ public class InventoryWrapper {
             //writer to write into file
             BufferedWriter wr = new BufferedWriter(new FileWriter(file));
             //for every item in the list, write the data into a table row
-             wr.write("<table>\n<tr>\n<th>Serial Number\t\tValue\t\tName\t\t</th>\n</tr>\n");
-
+            wr.write("<table><tr>\n<th>SerialNumber:</th>\n<th>Price:</th>\n<th>Name:</th>\n</tr>\n");
             for(Item item : getData()){
                 wr.write("<tr>");
-                wr.write(tdOpen + item.getSerial() + tdClose);
-                wr.write(tdOpen + item.getPrice() + tdClose);
-                wr.write(tdOpen + item.getName() + tdClose);
-                wr.write("\t</tr>");
+                wr.write("\t<td>" + item.getSerial() + "</td>\n");
+                wr.write("\t<td>" + item.getPrice() + "</td>\n");
+                wr.write("\t<td>" + item.getName() + "</td>\n");
+                wr.write("</tr>\n");
             }//finish the format with a table close
-            wr.write("\n</table");
+            wr.write("</table\n");
             //close file
          wr.close();
         }catch (Exception e){
@@ -150,23 +150,21 @@ public class InventoryWrapper {
         //use jsoup parser to parse the html file
         try {
             doc = Jsoup.parse(html, "UTF-8");
-            Element table = doc.selectFirst("table");
-            //mark every row
-            Iterator<Element> row = table.select("tr").iterator();
-            row.next();
-            //skip header row since its just "serial, price, name" and move onto actual items for the inventory
-            while (row.hasNext()) {
-                //loop through every row and find the "td" -table data
-                Iterator<Element> i = row.next().select("td").iterator();
-                //select that td and get the data from every td in the corresponding row
-                String serial = i.next().text();
-                String name = i.next().text();
-                String price = i.next().text();
-                //set item = to these strings
-                Item item = new Item(price, serial, name);
-                //add item to inventory
-                data.add(item);
+            ArrayList<String> htmlItems = new ArrayList<>();
+            Element table = doc.select("table").get(0); //select the first table.
+            Elements rows = table.select("tr");
+
+            for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
+                Element row = rows.get(i);
+                Elements cols = row.select("td");
+
+                String serial = cols.get(0).text();
+                String price = cols.get(1).text();
+                String name = cols.get(2).text();
+
+                data.add(new Item(price, serial, name));
             }
+
         } catch (Exception e) {
             //prints rip if error occurs because that's how I felt 998/999 times that I implemented this wrong and method fail :'(
             System.out.println("rip");

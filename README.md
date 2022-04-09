@@ -1,4 +1,4 @@
-# bauta-app2
+# Inventory Manager
 
 UserGuide Inventory Management App
 
